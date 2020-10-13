@@ -1,0 +1,34 @@
+@types: m margin, p padding;
+@directions: t top, b bottom, l left, r right, h horizontal, v vertical, a all;
+@values: 5, 6, 8, 10, 12, 13, 14, 15, 16, 18, 20, 24, 28, 30, 36, 50;
+
+.loop-types(@list1, @i: 1) when (@i <= length(@types)) {
+    @z: extract(extract(@types, @i), 1);
+    @zv: extract(extract(@types, @i), 2);
+    .loop-directions(@list2, @j:1 ) when (@j <= length(@directions)) {
+        @x: extract(extract(@directions, @j), 1);
+        @xv: extract(extract(@directions, @j), 2);
+        .loop-values(@list3, @k: 1) when (@k <= length(@values)) {
+            @c: extract(@values, @k);
+            .@{z}@{x}-@{c} when (@xv = horizontal) {
+                @{zv}: 0 unit(@c, px) !important;
+            }
+            .@{z}@{x}-@{c} when (@xv = vertical) {
+                @{zv}: unit(@c, px) 0 !important;
+            }
+            .@{z}@{x}-@{c} when (@xv = all) {
+                @{zv}: unit(@c, px) !important;
+            }
+            .@{z}@{x}-@{c} when ((@xv = top) or (@xv = bottom) or (@xv = left) or (@xv = right)) {
+                @{zv}-@{xv}: unit(@c, px) !important;
+            }
+            .loop-values(@list3, @k + 1);
+        }
+        .loop-values(@values);
+        .loop-directions(@list2, @j + 1);
+    }
+    .loop-directions(@directions);
+    .loop-types(@list1, @i + 1);
+}
+
+.loop-types(@types);
